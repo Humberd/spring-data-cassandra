@@ -269,6 +269,13 @@ public class CassandraQueryCreatorUnitTests {
 		assertThat(query).isEqualTo("SELECT * FROM key WHERE firstname='Walter';");
 	}
 
+	@Test
+	public void shouldCreateDeleteQuery() {
+		String query = createQuery("deleteByFirstname", Key.class, "Walter");
+
+		assertThat(query).isEqualTo("DELETE FROM key WHERE firstname='Walter';");
+	}
+
 	@Test(expected = IllegalArgumentException.class) // DATACASS-7
 	public void createsFindByPrimaryKey2PartCorrectly() {
 		createQuery("findByKey", TypeWithCompositeId.class, new Key());
@@ -282,7 +289,15 @@ public class CassandraQueryCreatorUnitTests {
 		StatementFactory factory = new StatementFactory(new UpdateMapper(converter));
 		Query query = creator.createQuery();
 
-		RegularStatement select = factory.select(query, context.getRequiredPersistentEntity(entityClass));
+
+		RegularStatement select;
+
+		if (tree.isDelete()) {
+			select = factory.delete(query, context.getRequiredPersistentEntity(entityClass));
+		} else {
+			select = factory.select(query, context.getRequiredPersistentEntity(entityClass));
+		}
+
 		return select.toString();
 	}
 

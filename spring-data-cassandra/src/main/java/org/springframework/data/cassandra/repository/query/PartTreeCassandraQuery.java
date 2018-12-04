@@ -104,6 +104,10 @@ public class PartTreeCassandraQuery extends AbstractCassandraQuery {
 			return getQueryStatementCreator().exists(getStatementFactory(), getTree(), parameterAccessor);
 		}
 
+		if (isDeleteQuery()) {
+			return getQueryStatementCreator().delete(getStatementFactory(), getTree(), parameterAccessor);
+		}
+
 		return getQueryStatementCreator().select(getStatementFactory(), getTree(), parameterAccessor);
 	}
 
