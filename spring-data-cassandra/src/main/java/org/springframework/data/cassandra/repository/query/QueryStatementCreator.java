@@ -83,6 +83,30 @@ class QueryStatementCreator {
 	}
 
 	/**
+	 * Create a {@literal DELETE} {@link Statement} from a {@link PartTree} and apply query options.
+	 *
+	 * @param statementFactory must not be {@literal null}.
+	 * @param tree must not be {@literal null}.
+	 * @param parameterAccessor must not be {@literal null}.
+	 * @return the {@literal DELETE} {@link Statement}.
+	 */
+	Statement delete(StatementFactory statementFactory, PartTree tree,
+					 CassandraParameterAccessor parameterAccessor) {
+		Function<Query, Statement> function = query -> {
+
+			RegularStatement statement = statementFactory.delete(query, requirePersistentEntity());
+
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(String.format("Created query [%s]/", statement));
+			}
+
+			return statement;
+		};
+
+		return doWithQuery(parameterAccessor, tree, function);
+	}
+
+	/**
 	 * Create a {@literal COUNT} {@link Statement} from a {@link PartTree} and apply query options.
 	 *
 	 * @param statementFactory must not be {@literal null}.
