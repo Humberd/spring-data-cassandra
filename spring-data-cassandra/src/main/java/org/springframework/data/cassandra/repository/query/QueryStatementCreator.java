@@ -97,7 +97,7 @@ class QueryStatementCreator {
 			RegularStatement statement = statementFactory.delete(query, requirePersistentEntity());
 
 			if (LOG.isDebugEnabled()) {
-				LOG.debug(String.format("Created query [%s]/", statement));
+				LOG.debug(String.format("Created query [%s].", statement));
 			}
 
 			return statement;

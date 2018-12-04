@@ -29,6 +29,7 @@ import org.springframework.data.annotation.QueryAnnotation;
  * @author Alex Shvid
  * @author Matthew T. Adams
  * @author Mark Paluch
+ * @author Maciej Sawicki
  */
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
@@ -62,5 +63,12 @@ public @interface Query {
 	 * @since 2.1
 	 */
 	boolean exists() default false;
+
+	/**
+	 * Returns whether the query should delete matching documents.
+	 *
+	 * @since 2.3
+	 */
+	boolean delete() default false;
 
 }

@@ -130,4 +130,12 @@ public class PartTreeCassandraQuery extends AbstractCassandraQuery {
 	protected boolean isLimiting() {
 		return getTree().isLimiting();
 	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.data.cassandra.repository.query.AbstractCassandraQuery#isDeleteQuery()
+	 */
+	@Override
+	protected boolean isDeleteQuery() {
+		return getTree().isDelete();
+	}
 }

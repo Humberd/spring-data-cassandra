@@ -35,6 +35,8 @@ import org.springframework.util.Assert;
 
 import com.datastax.driver.core.Statement;
 
+import static org.springframework.data.cassandra.repository.query.CassandraQueryExecution.*;
+
 /**
  * Base class for {@link RepositoryQuery} implementations for Cassandra.
  *
@@ -146,7 +148,9 @@ public abstract class AbstractCassandraQuery extends CassandraRepositoryQuerySup
 			return ((statement, type) -> new SingleEntityExecution(getOperations(), false).execute(statement, Long.class));
 		} else if (isExistsQuery()) {
 			return new ExistsExecution(getOperations());
-		} else {
+		} else if (isDeleteQuery()) {
+			return new IsAppliedExecution(getOperations());
+		}else {
 			return new SingleEntityExecution(getOperations(), isLimiting());
 		}
 	}
@@ -174,4 +178,11 @@ public abstract class AbstractCassandraQuery extends CassandraRepositoryQuerySup
 	 * @since 2.0.4
 	 */
 	protected abstract boolean isLimiting();
+
+	/**
+	 * Return whether it is a delete query.
+	 *
+	 * @return a boolean  value indicating whether it is a delete query.
+	 */
+	protected abstract boolean isDeleteQuery();
 }

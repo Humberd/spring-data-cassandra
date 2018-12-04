@@ -36,13 +36,15 @@ import com.datastax.driver.core.SimpleStatement;
  */
 public class StringBasedCassandraQuery extends AbstractCassandraQuery {
 
-	private static final String COUNT_AND_EXISTS = "Manually defined query for %s cannot be a count and exists query at the same time!";
+	private static final String COUNT_EXISTS_AND_DELETE = "Manually defined query for %s cannot be a count, exists and delete query at the same time!";
 
 	private final StringBasedQuery stringBasedQuery;
 
 	private final boolean isCountQuery;
 
 	private final boolean isExistsQuery;
+
+	private final boolean isDeleteQuery;
 
 	/**
 	 * Create a new {@link StringBasedCassandraQuery} for the given {@link CassandraQueryMethod},
@@ -90,13 +92,15 @@ public class StringBasedCassandraQuery extends AbstractCassandraQuery {
 
 			this.isCountQuery = queryAnnotation.count();
 			this.isExistsQuery = queryAnnotation.exists();
+			this.isDeleteQuery = queryAnnotation.delete();
 
-			if (ProjectionUtil.hasAmbiguousProjectionFlags(this.isCountQuery, this.isExistsQuery)) {
-				throw new IllegalArgumentException(String.format(COUNT_AND_EXISTS, method));
+			if (ProjectionUtil.hasAmbiguousProjectionFlags(this.isCountQuery, this.isExistsQuery, this.isDeleteQuery)) {
+				throw new IllegalArgumentException(String.format(COUNT_EXISTS_AND_DELETE, method));
 			}
 		} else {
 			this.isCountQuery = false;
 			this.isExistsQuery = false;
+			this.isDeleteQuery = false;
 		}
 	}
 
@@ -134,5 +138,10 @@ public class StringBasedCassandraQuery extends AbstractCassandraQuery {
 	@Override
 	protected boolean isLimiting() {
 		return false;
+	}
+
+	@Override
+	protected boolean isDeleteQuery() {
+		return this.isDeleteQuery;
 	}
 }

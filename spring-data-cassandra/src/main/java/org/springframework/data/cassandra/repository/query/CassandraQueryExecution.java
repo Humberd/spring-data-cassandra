@@ -29,6 +29,7 @@ import org.springframework.data.cassandra.core.mapping.CassandraPersistentProper
 import org.springframework.data.cassandra.core.query.CassandraPageRequest;
 import org.springframework.data.convert.EntityInstantiators;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.repository.query.ResultProcessor;
 import org.springframework.data.repository.query.ReturnedType;
@@ -232,6 +233,18 @@ interface CassandraQueryExecution {
 			return result != null ? converter.convert(result) : null;
 		}
 	}
+
+	@RequiredArgsConstructor
+	final class IsAppliedExecution implements CassandraQueryExecution {
+
+		private final @NonNull CassandraOperations operations;
+
+		@Override
+		public Object execute(Statement statement, Class<?> type) {
+			return operations.getCqlOperations().execute(statement);
+		}
+	}
+
 
 	/**
 	 * A {@link Converter} to post-process all source objects using the given {@link ResultProcessor}.
